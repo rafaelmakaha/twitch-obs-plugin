@@ -1,37 +1,19 @@
-require('dotenv').config()
-const tmi = require('tmi.js');
-const AWS = require('aws-sdk');
-const fs = require('fs');
+const CreateBot = require('./model/CreateBot');
+const express = require('express');
+const app = require('express')();
+const httpServer = require('http').createServer(app);
+var io = require('socket.io')(httpServer);
 
-const client = new tmi.Client({
-	options: { debug: true },
-	connection: {
-		secure: true,
-		reconnect: true
-	},
-	identity: {
-		username: process.env.TWITCH_USERNAME,
-		password: process.env.TWITCH_PASSWORD
-	},
-	channels: [ 'rmakaha' ]
+io.on("connection", (socket) => {
+	const bot = CreateBot(socket.emit);
 });
 
-client.connect();
+app.use(express.static(__dirname + '/js'));
 
-client.on('message', (channel, tags, message, self) => {
-	// Ignore echoed messages.
-    if(self) return;
-    // for(var key in tags){
-    //     console.log(key);
-    // }
-    // console.log(tags);
-    if(tags['custom-reward-id'] == 'bd97e0e9-7b68-46d9-ae6e-03d817bcda82'){
-        console.log(tags.username);
-        console.log("é um tts");
-        console.log(message);
-    }
-	if(message.toLowerCase() === '!hello') {
-		// "@alca, heya!"
-		client.say(channel, `@${tags.username}, heya!`);
-	}
+app.get('/', (req, res) => {
+	res.sendFile(__dirname + '/index.html');
+});
+
+httpServer.listen(3000, () => {
+	console.log('listening on *:3000');
 });
