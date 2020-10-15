@@ -2,8 +2,8 @@ require('dotenv').config()
 const tmi = require('tmi.js');
 
 class CreateBot {
-    constructor(socketEmit) {
-        this.socketEmit = socketEmit;
+    constructor(alertQueue) {
+        this.alertQueue = alertQueue;
         this.client = new tmi.Client({
             options: { debug: true },
             connection: {
@@ -19,17 +19,13 @@ class CreateBot {
         this.client.connect();
         this.client.on('message', this.message);
     }
-    socket = (dados) => {
-        if(typeof this.socketEmit === typeof Function)
-            this.socketEmit('emitX', dados);
-    }
     message = (channel, tags, message, self) => {
         // Ignore echoed messages.
         if(self) return;
         console.log(`Custom Reward ID: ${tags['custom-reward-id']}`);
         // Action on TTS
         if(tags['custom-reward-id'] == 'bd97e0e9-7b68-46d9-ae6e-03d817bcda82'){
-            this.socket({author: tags.username, message: message});
+            this.alertQueue({author: tags.username, message: message});
         }
         if(message.toLowerCase() === '!hello') {
             client.say(channel, `@${tags.username}, heya!`);
