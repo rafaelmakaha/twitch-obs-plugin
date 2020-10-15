@@ -26,11 +26,12 @@ class CreateBot {
     message = (channel, tags, message, self) => {
         // Ignore echoed messages.
         if(self) return;
+        console.log(`Custom Reward ID: ${tags['custom-reward-id']}`);
+        // Action on TTS
         if(tags['custom-reward-id'] == 'bd97e0e9-7b68-46d9-ae6e-03d817bcda82'){
-            this.socket(`@${tags.username}: ${message}`);
+            this.socket({author: tags.username, message: message});
         }
         if(message.toLowerCase() === '!hello') {
-            // "@alca, heya!"
             client.say(channel, `@${tags.username}, heya!`);
         }
     }
