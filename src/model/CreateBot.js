@@ -25,7 +25,11 @@ class CreateBot {
         console.log(`Custom Reward ID: ${tags['custom-reward-id']}`);
         // Action on TTS
         if(tags['custom-reward-id'] == 'bd97e0e9-7b68-46d9-ae6e-03d817bcda82'){
-            this.alertQueue({author: tags.username, message: message});
+            this.alertQueue({
+                author: tags.username, 
+                message: message, 
+                image: 'https://media.giphy.com/media/3orif1VQas10DXIYWk/giphy.gif',
+            });
         }
         if(message.toLowerCase() === '!hello') {
             client.say(channel, `@${tags.username}, heya!`);
