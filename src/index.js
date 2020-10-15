@@ -1,15 +1,22 @@
 const CreateBot = require('./model/CreateBot');
+const AlertQueue = require('./model/AlertQueue')
 const express = require('express');
-const app = require('express')();
+const app = express();
 const httpServer = require('http').createServer(app);
-var io = require('socket.io')(httpServer,{path: '/socket.io'});
+const io = require('socket.io')(httpServer,{path: '/socket.io'});
 
-const bot = new CreateBot(io.emit.bind(io));
+
+const queue = new AlertQueue(io.emit.bind(io));
+
+const bot = new CreateBot(queue.queue);
+
 app.use(express.static(__dirname + '/js'));
 
 io.on('connection', (socket) => {
 	console.log("User connected!")
+	socket.on('freeFront', queue.free);
 });
+
 
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/index.html');
