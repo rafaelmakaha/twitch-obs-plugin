@@ -8,20 +8,20 @@ socket.on('emitX', async (dados) => {
     try {
         console.log(dados);
         
-        const image = await imageLoad(dados.image);
-        const audio = await audioLoad(dados.audio);
+        //const image = await imageLoad(dados.image);
+        //const audio = await audioLoad(dados.audio);
         const h2 = document.createElement('h2');
         
         h2.innerHTML = `${dados.author}: ${dados.message}`;
-        container.appendChild(image);
+        //container.appendChild(image);
         container.appendChild(h2);
-        container.appendChild(audio);
+        //container.appendChild(audio);
 
         setTimeout(() => {
-            const [img, txt, aud] = container.childNodes;
-            container.removeChild(img)
+            const [txt] = container.childNodes;
+            //container.removeChild(img)
             container.removeChild(txt)
-            container.removeChild(aud)
+           // container.removeChild(aud)
         }, 5000);
         setTimeout(() => {
             socket.emit('freeFront', true);
