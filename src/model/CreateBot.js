@@ -28,16 +28,15 @@ class CreateBot {
         if(tags['custom-reward-id'] == 'bd97e0e9-7b68-46d9-ae6e-03d817bcda82'){
             tts(message, 'Ricardo')
             .then((res) => {
-                // console.log(res)
-                // this.alertQueue({
-                //     author: tags.username, 
-                //     message: message, 
-                //     image: 'https://media.giphy.com/media/3orif1VQas10DXIYWk/giphy.gif',
-                //     sound: {
-                //         basePath: 'https://ttsmp3.com/created_mp3/',
-                //         mp3: data.MP3
-                //     }
-                // });
+                this.alertQueue({
+                    author: tags.username, 
+                    message: message, 
+                    image: 'https://media.giphy.com/media/3orif1VQas10DXIYWk/giphy.gif',
+                    sound: {
+                        basePath: 'https://ttsmp3.com/created_mp3/',
+                        mp3: res.data.MP3
+                    }
+                });
             })
         }
         if(message.toLowerCase() === '!hello') {
