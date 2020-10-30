@@ -9,19 +9,19 @@ socket.on('emitX', async (dados) => {
         console.log(dados);
         
         //const image = await imageLoad(dados.image);
-        //const audio = await audioLoad(dados.audio);
+        const audio = await audioLoad(dados.sound.basePath, dados.sound.mp3);
         const h2 = document.createElement('h2');
         
         h2.innerHTML = `${dados.author}: ${dados.message}`;
         //container.appendChild(image);
         container.appendChild(h2);
-        //container.appendChild(audio);
+        container.appendChild(audio);
 
         setTimeout(() => {
-            const [txt] = container.childNodes;
+            const [txt,aud] = container.childNodes;
             //container.removeChild(img)
             container.removeChild(txt)
-           // container.removeChild(aud)
+            container.removeChild(aud)
         }, 5000);
         setTimeout(() => {
             socket.emit('freeFront', true);
