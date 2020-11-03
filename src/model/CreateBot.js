@@ -31,7 +31,21 @@ class CreateBot {
                 this.alertQueue({
                     author: tags.username, 
                     message: message, 
-                    image: 'https://media.giphy.com/media/3orif1VQas10DXIYWk/giphy.gif',
+                    // image: 'https://media.giphy.com/media/3orif1VQas10DXIYWk/giphy.gif',
+                    sound: {
+                        basePath: 'https://ttsmp3.com/created_mp3/',
+                        mp3: res.data.MP3
+                    }
+                });
+            })
+        }
+        if(tags['custom-reward-id'] == 'f6dc5998-8896-40de-9d92-118526c31c5c'){
+            tts(message, 'Vitoria')
+            .then((res) => {
+                this.alertQueue({
+                    author: tags.username, 
+                    message: message, 
+                    // image: 'https://media.giphy.com/media/3orif1VQas10DXIYWk/giphy.gif',
                     sound: {
                         basePath: 'https://ttsmp3.com/created_mp3/',
                         mp3: res.data.MP3
