@@ -7,26 +7,33 @@ const container = document.getElementById('container');
 socket.on('emitX', async (dados) => {
     try {
         console.log(dados);
+        let time = 3000;
         
-        //const image = await imageLoad(dados.image);
-        const audio = await audioLoad(dados.sound.basePath, dados.sound.mp3);
+        if (dados.image){
+            const image = await imageLoad(dados.image);
+            container.appendChild(image);
+        }
+
+        if (dados.sound){
+            const audio = await audioLoad(dados.sound.basePath, dados.sound.mp3)
+            container.appendChild(audio);
+            if (audio.duration > time/1000)
+                time = (audio.duration + 1) * 1000
+        }
+
         const h2 = document.createElement('h2');
-        
-        h2.innerHTML = `${dados.author}: ${dados.message}`;
-        //container.appendChild(image);
+        h2.innerHTML = `${dados.author}: \n${dados.message}`;
         container.appendChild(h2);
-        container.appendChild(audio);
 
         setTimeout(() => {
-            const [txt,aud] = container.childNodes;
-            //container.removeChild(img)
-            container.removeChild(txt)
-            container.removeChild(aud)
-        }, 5000);
+            while (container.firstChild) {
+                container.removeChild(container.lastChild);
+            }
+        }, time);
         setTimeout(() => {
             socket.emit('freeFront', true);
-        }, 6000);
+        }, time + 1000);
     } catch (error) {
-        console.log('abc ',error)
+        console.log('Error on generating frontEnd',error)
     }
 });
