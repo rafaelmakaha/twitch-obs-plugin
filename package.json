@@ -5,20 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "nodemon": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "nodemon": "nodemon src/index.js"
   },
   "author": "Rafael Makaha",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.771.0",
     "axios": "^0.21.0",
-    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "form-data": "^3.0.0",
     "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0",
     "tmi.js": "^1.5.0"
   }
 }
