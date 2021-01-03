@@ -21,39 +21,40 @@ class CreateBot {
         this.client.on('message', this.message);
     }
 
+    ttsHandler = ({data: ttsResponse}) => {
+        this.alertQueue({
+            author: tags.username, 
+            message: message, 
+            // image: 'https://media.giphy.com/media/3orif1VQas10DXIYWk/giphy.gif',
+            sound: {
+                basePath: 'https://ttsmp3.com/created_mp3/',
+                mp3: ttsResponse.MP3
+            }
+        });
+    }
+
     message = (channel, tags, message, self) => {
         // Ignore echoed messages.
         if(self) return;
         console.log(`Custom Reward ID: ${tags['custom-reward-id']}`);
-        // Action on TTS
+        // rewards config
         const rewardsConfig = [
             {
                 id: 'bd97e0e9-7b68-46d9-ae6e-03d817bcda82',
                 rewardFn: tts,
-                fnParamns: [message, 'Ricardo']
+                fnParamns: [message, 'Ricardo'],
+                fnHandler: this.ttsHandler,
             },
             {
                 id: 'f6dc5998-8896-40de-9d92-118526c31c5c',
                 rewardFn: tts,
-                fnParamns: [message, 'Vitoria']
+                fnParamns: [message, 'Vitoria'],
+                fnHandler: this.ttsHandler,
             }
-        ]
+        ];
 
         rewardsConfig.forEach((reward) => {
-            if(tags['custom-reward-id'] === reward.id) {
-                reward.rewardFn(...reward.fnParamns)
-                    .then(({data}) => {
-                        this.alertQueue({
-                            author: tags.username, 
-                            message: message, 
-                            // image: 'https://media.giphy.com/media/3orif1VQas10DXIYWk/giphy.gif',
-                            sound: {
-                                basePath: 'https://ttsmp3.com/created_mp3/',
-                                mp3: data.MP3
-                            }
-                        });
-                    })
-            }
+            if(tags['custom-reward-id'] === reward.id) reward.rewardFn(...reward.fnParamns).then(reward.fnHandler);
         })        
 
         if(message.toLowerCase() === '!hello') {
