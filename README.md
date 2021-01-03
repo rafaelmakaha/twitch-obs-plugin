@@ -1,2 +1,2 @@
-Twitch Discord OBS Plugin
+Twitch OBS Plugin
 ===
