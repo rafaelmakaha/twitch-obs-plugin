@@ -6,6 +6,7 @@ class MessagesQueue {
     }
 
     free = (free) => {
+        console.log('free: ', free)
         this.__free = free;
         this.sendToFront();
     }

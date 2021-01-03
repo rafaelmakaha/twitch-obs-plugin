@@ -8,7 +8,7 @@ socket.on('showMessage', async (dados) => {
     try {
         console.log('recived message',dados);
         let time = 3000;
-        let image = null, sound = null;
+        let image = null, audio = null;
     
         if (dados.image) image = await imageLoad(dados.image);
             
@@ -21,7 +21,7 @@ socket.on('showMessage', async (dados) => {
         h2.innerHTML = `${dados.author}: \n${dados.message}`;
     
         if(image) container.appendChild(image);
-        if(sound) container.appendChild(audio);
+        if(audio) container.appendChild(audio);
         container.appendChild(h2);
     
         setTimeout(() => {
