@@ -18,7 +18,8 @@ class MessagesQueue {
     sendToFront = () => {
         if(this.__free && this.__queue.length){
             this.__free = false;
-            const message = this.__queue.shift()
+            const message = this.__queue.shift();
+            console.log('message sending:', message);
             this.socketEmit('showMessage', message);
         }
     }

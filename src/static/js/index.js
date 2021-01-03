@@ -4,8 +4,8 @@ const { io } = window;
 const socket = io(window.location.href);
 const container = document.getElementById('container');
 
-socket.on('showMessage', (dados) => {
-    console.log(dados);
+socket.on('showMessage', async (dados) => {
+    console.log('recived message',dados);
     let time = 3000;
     let image = null, sound = null;
 
@@ -22,7 +22,6 @@ socket.on('showMessage', (dados) => {
     if(image) container.appendChild(image);
     if(sound) container.appendChild(audio);
     container.appendChild(h2);
-    
 
     setTimeout(() => {
         while (container.firstChild) {

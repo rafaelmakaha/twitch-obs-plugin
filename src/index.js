@@ -29,5 +29,4 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', () => connectedSocketClients.pop())
 });
 
-
 httpServer.listen(3000, () => console.log('Server listenin on :3000'));

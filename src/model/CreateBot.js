@@ -21,10 +21,10 @@ class CreateBot {
         this.client.on('message', this.message);
     }
 
-    ttsHandler = ({data: ttsResponse}) => {
+    ttsHandler = ({author, message}, {data: ttsResponse}) => {
         this.alertQueue({
-            author: tags.username, 
-            message: message, 
+            author, 
+            message, 
             // image: 'https://media.giphy.com/media/3orif1VQas10DXIYWk/giphy.gif',
             sound: {
                 basePath: 'https://ttsmp3.com/created_mp3/',
@@ -54,14 +54,10 @@ class CreateBot {
         ];
 
         rewardsConfig.forEach((reward) => {
-            if(tags['custom-reward-id'] === reward.id) reward.rewardFn(...reward.fnParamns).then(reward.fnHandler);
-        })        
-
-        if(message.toLowerCase() === '!hello') {
-            client.say(channel, `@${tags.username}, heya!`);
-        }
+            if(tags['custom-reward-id'] === reward.id)
+                reward.rewardFn(...reward.fnParamns).then((response) => reward.fnHandler({author: tags.username, message}, response));
+        })
     }
 }
 
 module.exports = CreateBot;
-
