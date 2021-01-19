@@ -1,0 +1,15 @@
+{
+    "channel": "rmakaha",
+    "rewards": [
+        {
+            "id": "bd97e0e9-7b68-46d9-ae6e-03d817bcda82",
+            "type": "tts",
+            "voice": "Ricardo"
+        },
+        {
+            "id": "f6dc5998-8896-40de-9d92-118526c31c5c",
+            "type": "tts",
+            "voice": "Vitoria"
+        }
+    ]
+}

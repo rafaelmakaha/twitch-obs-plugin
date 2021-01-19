@@ -1,24 +1,36 @@
 require('dotenv').config()
 const tmi = require('tmi.js');
 const tts = require('../utils/tts');
+const settings = require('../settings/settings.json')
 
 class CreateBot {
     constructor(alertQueue) {
         this.alertQueue = alertQueue;
+        this.configureRewards();
         this.client = new tmi.Client({
             options: { debug: true },
             connection: {
                 secure: true,
                 reconnect: true
             },
-            identity: {
-                username: process.env.TWITCH_USERNAME,
-                password: process.env.TWITCH_PASSWORD
-            },
-            channels: [ 'rmakaha' ]
+            channels: [ settings.channel ]
         });
         this.client.connect();
         this.client.on('message', this.message);
+    }
+
+    configureRewards = () => {
+        const rewards = {
+            tts: ({ id, voice }) => ({
+                id,
+                rewardFn: tts,
+                fnParamns: [voice],
+                fnHandler: this.ttsHandler
+            })
+        }
+        this.rewardsConfig = settings.rewards.map((reward) => (
+            rewards[reward.type](reward)
+        ))
     }
 
     ttsHandler = ({author, message}, {data: ttsResponse}) => {
@@ -38,24 +50,10 @@ class CreateBot {
         if(self) return;
         console.log(`Custom Reward ID: ${tags['custom-reward-id']}`);
         // rewards config
-        const rewardsConfig = [
-            {
-                id: 'bd97e0e9-7b68-46d9-ae6e-03d817bcda82',
-                rewardFn: tts,
-                fnParamns: [message, 'Ricardo'],
-                fnHandler: this.ttsHandler,
-            },
-            {
-                id: 'f6dc5998-8896-40de-9d92-118526c31c5c',
-                rewardFn: tts,
-                fnParamns: [message, 'Vitoria'],
-                fnHandler: this.ttsHandler,
-            }
-        ];
 
-        rewardsConfig.forEach((reward) => {
+        this.rewardsConfig.forEach((reward) => {
             if(tags['custom-reward-id'] === reward.id)
-                reward.rewardFn(...reward.fnParamns).then((response) => reward.fnHandler({author: tags.username, message}, response));
+                reward.rewardFn(message, ...reward.fnParamns).then((response) => reward.fnHandler({author: tags.username, message}, response));
         })
     }
 }
