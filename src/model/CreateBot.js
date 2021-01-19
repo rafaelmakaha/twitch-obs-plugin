@@ -1,4 +1,3 @@
-require('dotenv').config()
 const tmi = require('tmi.js');
 const tts = require('../utils/tts');
 const settings = require('../settings/settings.json')
