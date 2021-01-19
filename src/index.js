@@ -1,28 +1,44 @@
-const CreateBot = require('./model/CreateBot');
-const AlertQueue = require('./model/AlertQueue')
 const express = require('express');
-const app = express();
-const httpServer = require('http').createServer(app);
-const io = require('socket.io')(httpServer,{path: '/socket.io'});
-const cors = require('cors');
+const http = require('http');
+const socketIo = require('socket.io')
 const path = require('path');
 
+const MessagesQueue = require('./model/MessagesQueue');
+const CreateBot = require('./model/CreateBot');
 
-app.use(cors());
-const queue = new AlertQueue(io.emit.bind(io));
-const bot = new CreateBot(queue.queue);
+const startServer = async () => {
+	try {
+		const app = express();
+		const httpServer = http.createServer(app);
 
-app.use(express.static(path.join(__dirname, '/static')));
+		const io = socketIo(httpServer, {path: '/socket.io'});
 
-io.on('connection', (socket) => {
-	console.log("User connected!")
-	socket.on('freeFront', queue.free);
-});
+		const messagesQueue = new MessagesQueue(io.emit.bind(io));
+		new CreateBot(messagesQueue.queue);
 
-app.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname, '/static/index.html'));
-});
+		app.use(express.static(path.join(__dirname, '/static')));
 
-httpServer.listen(3000, () => {
-	console.log('listening on *:3000');
-});
+		const connectedSocketClients = [];
+
+		io.on('connection', (socket) => {
+			console.log('User connected!');
+			const hasClients = !!connectedSocketClients.length;
+			console.log('Has Clients:', hasClients);
+			if(hasClients) return socket.disconnect(true);
+			
+			connectedSocketClients.push(socket)
+			socket.on('freeFront', messagesQueue.free);
+			socket.on('disconnect', (reason) => {
+				console.log('socket disconnected: ', reason);
+				connectedSocketClients.pop()
+			})
+		});
+
+		httpServer.listen(3000, () => console.log('Server listenin on :3000'));
+
+	} catch (error) {
+		console.log('Error in start server', error)
+	}
+}
+
+startServer();
