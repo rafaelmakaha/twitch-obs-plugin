@@ -1,25 +1,31 @@
 const tmi = require('tmi.js');
 const tts = require('../utils/tts');
-const settings = require('../settings/settings.json')
+const path = require('path');
+const fs = require('fs');
 
 class CreateBot {
     constructor(alertQueue) {
         this.alertQueue = alertQueue;
+        this.channelName = '';
         this.configureRewards();
+        this.startClient();
+    }
+
+    startClient = () => {
         this.client = new tmi.Client({
             options: { debug: true },
             connection: {
                 secure: true,
                 reconnect: true
             },
-            channels: [ settings.channel ]
+            channels: [ this.channelName ]
         });
         this.client.connect();
         this.client.on('message', this.message);
     }
 
     configureRewards = () => {
-        const settings = require('../settings/settings.json')
+        const settings = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'settings', 'settings.json')));
         const rewards = {
             tts: ({ id, voice }) => ({
                 id,
@@ -31,6 +37,12 @@ class CreateBot {
         this.rewardsConfig = settings.rewards.map((reward) => (
             rewards[reward.type](reward)
         ))
+        const {channelName} = this
+        this.channelName = settings.channel
+        if ((this.channelName !== channelName) && channelName) {
+            this.startClient();
+        }
+
     }
 
     ttsHandler = ({author, message}, {data: ttsResponse}) => {
