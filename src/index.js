@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io')
+const morgan = require('morgan')
 const path = require('path');
 
 const MessagesQueue = require('./model/MessagesQueue');
@@ -17,6 +18,12 @@ const startServer = async () => {
 		const messagesQueue = new MessagesQueue(io.emit.bind(io));
 		const bot = new CreateBot(messagesQueue.queue);
 
+		app.use(( req, res, next ) => {
+			req.bot = bot;
+			next();
+		});
+		app.use(express.json())
+		app.use(morgan('combined'))
 		app.use(express.static(path.join(__dirname, '/static')));
 		app.use(settings)
 
