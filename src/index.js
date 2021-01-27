@@ -5,6 +5,7 @@ const path = require('path');
 
 const MessagesQueue = require('./model/MessagesQueue');
 const CreateBot = require('./model/CreateBot');
+const settings = require('./routes/settings');
 
 const startServer = async () => {
 	try {
@@ -14,9 +15,10 @@ const startServer = async () => {
 		const io = socketIo(httpServer, {path: '/socket.io'});
 
 		const messagesQueue = new MessagesQueue(io.emit.bind(io));
-		new CreateBot(messagesQueue.queue);
+		const bot = new CreateBot(messagesQueue.queue);
 
 		app.use(express.static(path.join(__dirname, '/static')));
+		app.use(settings)
 
 		const connectedSocketClients = [];
 

@@ -19,6 +19,7 @@ class CreateBot {
     }
 
     configureRewards = () => {
+        const settings = require('../settings/settings.json')
         const rewards = {
             tts: ({ id, voice }) => ({
                 id,
