@@ -11,6 +11,21 @@
             "id": "f6dc5998-8896-40de-9d92-118526c31c5c",
             "type": "tts",
             "voice": "Vitoria"
+        },
+        {
+            "id": "b00fbda5-9acb-4d49-a167-dd5424e62bdf",
+            "type": "tts",
+            "voice": "Cristiano"
+        },
+        {
+            "id": "00003253-ee22-49d7-887c-38cb6003de08",
+            "type": "tts",
+            "voice": "Ines"
+        },
+        {
+            "id": "",
+            "type": "sound",
+            "sound": "naofazmal"
         }
     ]
 }
