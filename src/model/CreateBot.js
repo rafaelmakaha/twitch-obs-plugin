@@ -1,48 +1,43 @@
 const tmi = require('tmi.js');
 const tts = require('../utils/tts');
-const path = require('path');
-const fs = require('fs');
+const settings = require('../settings/settings.json')
 
 class CreateBot {
     constructor(alertQueue) {
         this.alertQueue = alertQueue;
-        this.channelName = '';
         this.configureRewards();
-        this.startClient();
-    }
-
-    startClient = () => {
         this.client = new tmi.Client({
             options: { debug: true },
             connection: {
                 secure: true,
                 reconnect: true
             },
-            channels: [ this.channelName ]
+            channels: [ settings.channel ]
         });
         this.client.connect();
         this.client.on('message', this.message);
     }
 
     configureRewards = () => {
-        const settings = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'settings', 'settings.json')));
+        const settings = require('../settings/settings.json')
+        console.log(settings)
         const rewards = {
             tts: ({ id, voice }) => ({
                 id,
                 rewardFn: tts,
                 fnParamns: [voice],
                 fnHandler: this.ttsHandler
+            }),
+            sound: ({id, sound}) => ({
+                id,
+                rewardFn: () => sound,
+                fnParamns: [sound],
+                fnHandler: this.soundHandler
             })
         }
         this.rewardsConfig = settings.rewards.map((reward) => (
             rewards[reward.type](reward)
         ))
-        const {channelName} = this
-        this.channelName = settings.channel
-        if ((this.channelName !== channelName) && channelName) {
-            this.startClient();
-        }
-
     }
 
     ttsHandler = ({author, message}, {data: ttsResponse}) => {
@@ -57,6 +52,16 @@ class CreateBot {
         });
     }
 
+    soundHandler = ({author}, sound) => {
+        this.alertQueue({
+            author,
+            sound: {
+                basePath: 'https://www.myinstants.com/media/sounds/',
+                mp3: + sound + '.mp3'
+            }
+        })
+    }
+
     message = (channel, tags, message, self) => {
         // Ignore echoed messages.
         if(self) return;
@@ -65,7 +70,8 @@ class CreateBot {
 
         this.rewardsConfig.forEach((reward) => {
             if(tags['custom-reward-id'] === reward.id)
-                reward.rewardFn(message, ...reward.fnParamns).then((response) => reward.fnHandler({author: tags.username, message}, response));
+                reward.rewardFn(message, ...reward.fnParamns)
+                .then((response) => reward.fnHandler({author: tags.username, message}, response));
         })
     }
 }
