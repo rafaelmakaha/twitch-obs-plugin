@@ -25,6 +25,11 @@
           "id": "c40891a1-3a96-4e37-991a-019764bf95d7",
           "type": "sound",
           "sound": "loli-no"
+      },
+      {
+        "id": "0f9a6977-b514-423a-a90c-7cfcfcf379e4",
+        "type": "sound",
+        "sound": "yah"
       }
   ]
 }
