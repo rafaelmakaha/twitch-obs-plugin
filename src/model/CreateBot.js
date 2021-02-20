@@ -30,7 +30,7 @@ class CreateBot {
             }),
             sound: ({id, sound}) => ({
                 id,
-                rewardFn: () => sound,
+                rewardFn: (_, sound) => Promise.resolve(sound),
                 fnParamns: [sound],
                 fnHandler: this.soundHandler
             })
@@ -52,12 +52,12 @@ class CreateBot {
         });
     }
 
-    soundHandler = ({author}, sound) => {
+    soundHandler = ({author, message}, sound) => {
         this.alertQueue({
             author,
             sound: {
-                basePath: 'https://www.myinstants.com/media/sounds/',
-                mp3: + sound + '.mp3'
+                basePath: 'http://localhost:3000/sounds/',
+                mp3: sound + '.mp3',
             }
         })
     }
@@ -69,9 +69,12 @@ class CreateBot {
         // rewards config
 
         this.rewardsConfig.forEach((reward) => {
-            if(tags['custom-reward-id'] === reward.id)
+            if(tags['custom-reward-id'] === reward.id){
                 reward.rewardFn(message, ...reward.fnParamns)
-                .then((response) => reward.fnHandler({author: tags.username, message}, response));
+                .then((response) => {
+                    reward.fnHandler({author: tags.username, message}, response)
+                });
+            }
         })
     }
 }
