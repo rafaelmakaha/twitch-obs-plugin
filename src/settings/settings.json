@@ -30,6 +30,11 @@
         "id": "0f9a6977-b514-423a-a90c-7cfcfcf379e4",
         "type": "sound",
         "sound": "yah"
+      },
+	  {
+        "id": "72c2f834-c156-4229-a67b-c2717a139152",
+        "type": "sound",
+        "sound": "faustao-errou"
       }
   ]
 }
