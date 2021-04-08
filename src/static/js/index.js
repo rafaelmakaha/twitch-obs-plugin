@@ -18,8 +18,10 @@ socket.on('showMessage', async (dados) => {
         }
     
         const h2 = document.createElement('h2');
-        h2.innerHTML = `${dados.author}: \n${dados.message}`;
-    
+        if (dados.message)
+            h2.innerHTML = `${dados.author}: \n${dados.message}`;
+        else 
+            h2.innerHTML = `${dados.author}`
         if(image) container.appendChild(image);
         if(audio) container.appendChild(audio);
         container.appendChild(h2);

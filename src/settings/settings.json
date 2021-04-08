@@ -22,9 +22,39 @@
             "voice": "Ines"
         },
         {
-            "id": "",
+          "id": "c9aad588-b7e3-41a3-a519-7e907366066c",
+          "type": "tts",
+          "voice": "Enrique"
+        },
+        {
+            "id": "c40891a1-3a96-4e37-991a-019764bf95d7",
             "type": "sound",
-            "sound": "naofazmal"
+            "sound": "loli-no"
+        },
+        {
+          "id": "0f9a6977-b514-423a-a90c-7cfcfcf379e4",
+          "type": "sound",
+          "sound": "yah"
+        },
+        {
+          "id": "72c2f834-c156-4229-a67b-c2717a139152",
+          "type": "sound",
+          "sound": "faustao-errou"
+        },
+		{
+          "id": "f758a26c-b279-4239-b3b8-cab868144b19",
+          "type": "sound",
+          "sound": "cavalo"
+        },
+		{
+          "id": "0effb89f-458c-4945-8d84-57144a20e87f",
+          "type": "sound",
+          "sound": "iha"
+        },
+		{
+          "id": "32b0b9ed-9354-43b3-b8a5-2dde65d977b5",
+          "type": "sound",
+          "sound": "uepa"
         }
     ]
-}
+  }
