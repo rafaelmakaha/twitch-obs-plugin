@@ -1,54 +1,53 @@
-const express = require('express');
-const http = require('http');
+const express = require('express')
+const http = require('http')
 const socketIo = require('socket.io')
 const morgan = require('morgan')
-const path = require('path');
+const path = require('path')
 
-const MessagesQueue = require('./model/MessagesQueue');
-const CreateBot = require('./model/CreateBot');
-const settings = require('./routes/settings');
+const MessagesQueue = require('./model/MessagesQueue')
+const CreateBot = require('./model/CreateBot')
+const settings = require('./routes/settings')
 
 const startServer = async () => {
-	try {
-		const app = express();
-		const httpServer = http.createServer(app);
+  try {
+    const app = express()
+    const httpServer = http.createServer(app)
 
-		const io = socketIo(httpServer, {path: '/socket.io'});
+    const io = socketIo(httpServer, { path: '/socket.io' })
 
-		const messagesQueue = new MessagesQueue(io.emit.bind(io));
-		const bot = new CreateBot(messagesQueue.queue);
+    const messagesQueue = new MessagesQueue(io.emit.bind(io))
+    const bot = new CreateBot(messagesQueue.queue)
 
-		app.use(( req, res, next ) => {
-			req.bot = bot;
-			next();
-		});
-		app.use(express.json())
-		app.use(morgan('combined'))
-		app.use(express.static(path.join(__dirname, '/static')));
-		app.use('/sounds', express.static(path.join(__dirname, '/static/assets/sounds')));
-		app.use(settings)
+    app.use((req, res, next) => {
+      req.bot = bot
+      next()
+    })
+    app.use(express.json())
+    app.use(morgan('combined'))
+    app.use(express.static(path.join(__dirname, '/static')))
+    app.use('/sounds', express.static(path.join(__dirname, '/static/assets/sounds')))
+    app.use(settings)
 
-		const connectedSocketClients = [];
+    const connectedSocketClients = []
 
-		io.on('connection', (socket) => {
-			console.log('User connected!');
-			const hasClients = !!connectedSocketClients.length;
-			console.log('Has Clients:', hasClients);
-			if(hasClients) return socket.disconnect(true);
-			
-			connectedSocketClients.push(socket)
-			socket.on('freeFront', messagesQueue.free);
-			socket.on('disconnect', (reason) => {
-				console.log('socket disconnected: ', reason);
-				connectedSocketClients.pop()
-			})
-		});
+    io.on('connection', (socket) => {
+      console.log('User connected!')
+      const hasClients = !!connectedSocketClients.length
+      console.log('Has Clients:', hasClients)
+      if (hasClients) return socket.disconnect(true)
 
-		httpServer.listen(3000, () => console.log('Server listenin on :3000'));
+      connectedSocketClients.push(socket)
+      socket.on('freeFront', messagesQueue.free)
+      socket.on('disconnect', (reason) => {
+        console.log('socket disconnected: ', reason)
+        connectedSocketClients.pop()
+      })
+    })
 
-	} catch (error) {
-		console.log('Error in start server', error)
-	}
+    httpServer.listen(3000, () => console.log('Server listenin on :3000'))
+  } catch (error) {
+    console.log('Error in start server', error)
+  }
 }
 
-startServer();
+startServer()
