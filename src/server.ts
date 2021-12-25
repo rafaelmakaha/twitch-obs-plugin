@@ -2,7 +2,7 @@ if (process.env.NODE_ENV !== 'production')
     require('dotenv').config()
 
 import axios from 'axios'
-import fs from 'fs'
+import fs, { access } from 'fs'
 import path from 'path'
 import https from 'https'
 
@@ -30,5 +30,29 @@ axios({
     data: {
         grant_type: 'client_credentials'
     }
-}).then((response) => console.log(response.data));
+}).then((response) => {
+    const accessToken = response.data?.access_token
+
+    const reqGN = axios.create({
+        baseURL: process.env.GN_ENDPOINT,
+        httpsAgent: agent,
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+
+    const dataCob = {
+        "calendario": {
+          "expiracao": 3600
+        },
+        "valor": {
+          "original": "100.00"
+        },
+        "chave": "71cdf9ba-c695-4e3c-b010-abb521a3f1be",
+        "solicitacaoPagador": "Informe o número ou identificador do pedido."
+      }
+
+    reqGN.post('v2/cob', dataCob).then(response => console.log(response.data))
+});
 
