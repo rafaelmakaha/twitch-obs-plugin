@@ -2,6 +2,7 @@ import axios from 'axios'
 import fs from 'fs'
 import path from 'path'
 import https from 'https'
+import {TCredentials} from '../types'
 
 const cert = fs.readFileSync(
   path.resolve(__dirname, `../../certs/${process.env.GN_CERT}`)
@@ -12,11 +13,10 @@ const agent = new https.Agent({
   passphrase: ''
 });
 
-const credentials = Buffer.from(
-  `${process.env.GN_CLIENT_ID}:${process.env.GN_CLIENT_SECRET}`
-).toString('base64');
-
-const authenticate = () => {
+const authenticate = ({clientID, clientSecret}: TCredentials) => {
+  const credentials = Buffer.from(
+    `${clientID}:${clientSecret}`
+  ).toString('base64');
   return axios({
     method: 'POST',
     url: `${process.env.GN_ENDPOINT}/oauth/token`,
@@ -31,8 +31,8 @@ const authenticate = () => {
   }) 
 }
 
-export const GNRequest = async() => {
-  const authResponse = await authenticate()
+export const GNRequest = async(credentials: TCredentials) => {
+  const authResponse = await authenticate(credentials)
   const accessToken = authResponse.data?.access_token
   return axios.create({
     baseURL: process.env.GN_ENDPOINT,
